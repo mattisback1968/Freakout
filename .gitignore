@@ -1,0 +1,15 @@
+# Ignorer l'environnement virtuel Python
+.venv/
+venv/
+ENV/
+
+# Ignorer les fichiers temporaires spécifiques aux OS
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+*Copie.*
+*.pdf
+*.odt
+*_copie*

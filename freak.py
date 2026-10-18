@@ -4,8 +4,52 @@ import random  # pour couleur de brique aléatoir, à venir
 
 import os
 
-# Dans votre bloc try/except :
+from pathlib import Path
+import pygame
 
+# 1. Variable globale pour le dossier des sons
+BASE_DIR = Path(__file__).resolve().parent
+SOUNDS_DIR = BASE_DIR / "assets" / "sounds"
+
+# 2. Dictionnaire global pour stocker les sons chargés
+SONS = {}
+
+def charger_les_sons():
+    """Initialise le mixeur et charge tous les sons du jeu en mémoire"""
+    global SONS
+    try:
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+            
+        # Liste de vos fichiers audio
+        liste_sons = {
+            "brique": "boing.ogg",
+            "raquette": "paddle.ogg",
+            "perte_vie": "lose_life.ogg",  # Futur son
+            "victoire": "win.ogg"        # Futur son
+        }
+        
+        # Chargement automatique de chaque son
+        for nom, fichier in liste_sons.items():
+            chemin_complet = SOUNDS_DIR / fichier
+            if chemin_complet.exists():
+                SONS[nom] = pygame.mixer.Sound(str(chemin_complet))
+                SONS[nom].set_volume(0.5)
+            else:
+                print(f"Attention : Le fichier {fichier} est introuvable.")
+                SONS[nom] = None
+                
+        print("🔊 Tous les sons ont été chargés avec succès !")
+        
+    except Exception as e:
+        print(f"Note : Mode audio indisponible ({e}). Mode silencieux activé.")
+        # En cas de panne audio, on remplit le dictionnaire avec None pour éviter les plantages
+        SONS = {"brique": None, "raquette": None, "perte_vie": None, "victoire": None}
+
+# Appel de la fonction au lancement du jeu
+
+
+charger_les_sons()
 
 
 # 1. Initialisation
@@ -47,6 +91,7 @@ removed_bricks = 0
 player = "player 1"
 vies = 3
 statut_jeu = "JOUER"
+level_names = ["Qui va piano va sano", "Allegro ma non troppo", "Who switched off the lights?"]
 
 ecran = pygame.display.set_mode((LARGEUR, HAUTEUR))
 pygame.display.set_caption("Casse-briques")
@@ -119,7 +164,9 @@ while en_cours:
         # Collision Raquette
         if rect_balle.colliderect(rect_raquette):
             balle_y = raquette_y - balle_rayon
-            balle_dy = -abs(balle_dy)           
+            balle_dy = -abs(balle_dy)
+            if SONS["raquette"]:
+                SONS["raquette"].play()           
 
             centre_raquette = raquette_x + (raquette_w / 2)
             facteur_impact = (balle_x - centre_raquette) / (raquette_w / 2)
@@ -129,8 +176,8 @@ while en_cours:
         for brique in briques[:]:
             if rect_balle.colliderect(brique):
                 # Ne joue le son que si le fichier a bien été chargé
-                if son_rebond:
-                    son_rebond.play()
+                if SONS["brique"]:
+                    SONS["brique"].play()
                 briques.remove(brique)
                 balle_dy *= -1
                 score += 10
