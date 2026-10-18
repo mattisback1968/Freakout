@@ -1,6 +1,8 @@
-# 🕹️ Breakout Retro Edition
+# 🕹️ Freakout -> Breakout Retro Edition
 
-Une adaptation moderne et fidèle du grand classique du retrogaming **Breakout**, développée en **Python** avec la bibliothèque **Pygame**. Le jeu se lance directement dans une fenêtre dédiée sur votre bureau.
+IN THE MAKING.
+
+Une adaptation moderne du grand classique du retrogaming **Breakout**, développée en **Python** avec la bibliothèque **Pygame**. Le jeu se lance directement dans une fenêtre dédiée sur votre bureau.
 
 ## 🚀 Fonctionnalités
 - **Gameplay Classique** : Détruisez toutes les briques en faisant rebondir la balle sur votre raquette.
@@ -18,8 +20,8 @@ Pour lancer ce jeu, vous devez avoir installé :
 
 1. **Cloner le projet** sur votre machine :
    ```bash
-   git clone https://github.com
-   cd NOM_DE_VOTRE_DEPOT
+   git clone https://github.com/mattisback1968/Freakout
+   cd freakout
    ```
 
 2. **Installer les dépendances** nécessaires (Pygame) :
@@ -30,17 +32,25 @@ Pour lancer ce jeu, vous devez avoir installé :
 ## 🎮 Utilisation
 
 Pour lancer le jeu depuis votre terminal, exécutez la commande suivante :
+
+Dans cette version préliminaire encore très partielle : 
+```bash
+python freak.py
+```
+
+Dans la version finale :
 ```bash
 python main.py
 ```
+
 
 ### ⌨️ Commandes du jeu
 - **Flèche Gauche (`←`)** : Déplacer la raquette vers la gauche
 - **Flèche Droite (`→`)** : Déplacer la raquette vers la droite
 - **Espace** : Lancer la balle au début de la partie / Relancer après une vie perdue / Mettre en pause / Sortir du mode Pause
-- **Échap (`Éch`)** : Quitter le jeu à tout moment
+- **Échap (`Éch`)** : Quitter le jeu à tout moment A IMPLEMENTER
 
-## 🎼 Les Niveaux & Clins d'œil Culturels
+## 🎼 Les Niveaux & Clins d'œil Culturels (implémentation locale en cours)
 
 Chaque niveau de cette adaptation possède sa propre identité visuelle et est nommé d'après un clin d'œil musical, cinématographique, littéraire ou populaire. 
 
@@ -52,7 +62,7 @@ Voici quelques exemples de niveaux que vous devrez affronter :
 
 ## 📂 Structure du projet
 ```text
-├── assets/          # (Optionnel) Images, polices rétro et sons
+├── assets/          # Images, polices rétro et sons
 ├── main.py          # Point d'entrée principal du jeu
 ├── README.md        # Documentation du projet
 └── requirements.txt # Liste des dépendances Python
