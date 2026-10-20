@@ -1,5 +1,6 @@
 import sys
 import pygame
+import math
 import random  # pour couleur de brique aléatoir, à venir
 
 import os
@@ -59,13 +60,10 @@ police_pause = pygame.font.SysFont("Arial", 64, bold=True)
 police_stats = pygame.font.SysFont("Arial", 24, bold=False)
 
 # Initialisation du son avec sécurité anti-plantage
-# 1. Pré-configuration et Initialisation
+# . Pré-configuration et Initialisation
 pygame.mixer.pre_init(44100, -16, 2, 512) # Force des paramètres audio standards et légers
 pygame.init()
 pygame.font.init()
-
-police_pause = pygame.font.SysFont("Arial", 64, bold=True)
-police_stats = pygame.font.SysFont("Arial", 24, bold=False)
 
 # Chargement du son sécurisé
 son_rebond = None
@@ -91,7 +89,8 @@ removed_bricks = 0
 player = "player 1"
 vies = 3
 statut_jeu = "JOUER"
-level_names = ["Qui va piano va sano", "Allegro ma non troppo", "Who switched off the lights?"]
+level_names = ["Qui va piano va sano", "Allegro ma non troppo", "Who switched off the lights?"
+               "The Real McCoy"]
 
 ecran = pygame.display.set_mode((LARGEUR, HAUTEUR))
 pygame.display.set_caption("Casse-briques")
@@ -133,6 +132,10 @@ while en_cours:
                     statut_jeu = "PAUSE"
                 elif statut_jeu == "PAUSE":
                     statut_jeu = "JOUER"
+            if event.key == pygame.K_ESCAPE:
+                pygame.quit()
+                sys.exit()
+
 
     # --- PHYSIQUE ---
     if statut_jeu == "JOUER":
@@ -161,30 +164,71 @@ while en_cours:
         rect_raquette = pygame.Rect(raquette_x, raquette_y, raquette_w, raquette_h)
         rect_balle = pygame.Rect(balle_x - balle_rayon, balle_y - balle_rayon, balle_rayon * 2, balle_rayon * 2)
 
-        # Collision Raquette
+        # Collision Raquette (Indépendante du clavier)
         if rect_balle.colliderect(rect_raquette):
+            # Sécurité physique : On recale la balle juste au-dessus de la raquette
             balle_y = raquette_y - balle_rayon
-            balle_dy = -abs(balle_dy)
-            if SONS["raquette"]:
-                SONS["raquette"].play()           
 
+            # Déclenchement du son si disponible
+            if son_rebond:
+                son_rebond.play()
+
+            # Vitesse totale voulue pour la balle (pixels par frame)
+            VITESSE_TOTALE = 5.0
+
+            # Calcul de l'impact (-1.0 à gauche, 0.0 au milieu, 1.0 à droite)
             centre_raquette = raquette_x + (raquette_w / 2)
             facteur_impact = (balle_x - centre_raquette) / (raquette_w / 2)
-            balle_dx = facteur_impact * 5
 
-        # Collision Briques
+            # Calcul de la vitesse horizontale (limitée à 4.2 max pour éviter les trajectoires 100% horizontales)
+            balle_dx = facteur_impact * 4.2
+
+            # Ajustement magique de la vitesse verticale (Pythagore : dy = sqrt(V_totale^2 - dx^2))
+            # Le max(0.1, ...) évite une valeur négative ou nulle sous la racine en cas d'arrondi
+            balle_dy = -math.sqrt(
+                max(0.1, VITESSE_TOTALE**2 - balle_dx**2)
+            )
+
+
+        # 6 Collision Briques
+                # 6. Collision avec les briques
         for brique in briques[:]:
             if rect_balle.colliderect(brique):
-                # Ne joue le son que si le fichier a bien été chargé
+                # On calcule le chevauchement (pénétration) sur les deux axes
+                overlap_x = min(rect_balle.right, brique.right) - max(
+                    rect_balle.left, brique.left
+                )
+                overlap_y = min(rect_balle.bottom, brique.bottom) - max(
+                    rect_balle.top, brique.top
+                )
+
+                # Si le chevauchement horizontal est plus petit, le choc est latéral (côtés)
+                if overlap_x < overlap_y:
+                    balle_dx *= -1  # Rebond horizontal
+                    # Sécurité : on recale la balle pour éviter qu'elle traverse
+                    if balle_dx > 0:
+                        balle_x = brique.right + balle_rayon
+                    else:
+                        balle_x = brique.left - balle_rayon
+                # Sinon, le choc est vertical (haut ou bas)
+                else:
+                    balle_dy *= -1  # Rebond vertical
+                    # Sécurité : on recale la balle
+                    if balle_dy > 0:
+                        balle_y = brique.bottom + balle_rayon
+                    else:
+                        balle_y = brique.top - balle_rayon
+
+                # Logique de destruction et score
                 if SONS["brique"]:
-                    SONS["brique"].play()
+                                SONS["brique"].play()
                 briques.remove(brique)
-                balle_dy *= -1
                 score += 10
                 removed_bricks += 1
                 if removed_bricks == MAX_BRICKS:
                     statut_jeu = "VICTOIRE"
                 break
+
 
         # Perte de balle
         if balle_y - balle_rayon > HAUTEUR:
