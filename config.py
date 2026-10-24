@@ -1,5 +1,5 @@
 # Dimensions de la fenêtre
-WIDTH, HEIGHT = 800, 600
+LARGEUR, HAUTEUR = 800, 600
 FPS = 60
 
 # Palette de couleurs rétro

@@ -1,5 +1,5 @@
 import pygame
-from config import WIDTH, HEIGHT
+from config import LARGEUR, HAUTEUR
 
 def gerer_collisions_murs(balle, sons):
     """

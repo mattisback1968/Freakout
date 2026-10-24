@@ -11,6 +11,7 @@ import pygame
 # 1. Variable globale pour le dossier des sons
 BASE_DIR = Path(__file__).resolve().parent
 SOUNDS_DIR = BASE_DIR / "assets" / "sounds"
+sounds_ok_ = True
 
 # 2. Dictionnaire global pour stocker les sons chargés
 SONS = {}
@@ -26,8 +27,9 @@ def charger_les_sons():
         liste_sons = {
             "brique": "boing.ogg",
             "raquette": "paddle.ogg",
-            "perte_vie": "lose_life.ogg",  # Futur son
-            "victoire": "win.ogg"        # Futur son
+            "perte_vie": "lose_life.ogg",  # Futur son, vie perdue
+            "victoire": "win.ogg",        # Futur son, niveau terminé
+            "next": "dun_dun.ogg"  # futur son, passage au niveau supérieur
         }
         
         # Chargement automatique de chaque son
@@ -39,13 +41,17 @@ def charger_les_sons():
             else:
                 print(f"Attention : Le fichier {fichier} est introuvable.")
                 SONS[nom] = None
+                sound_ok = False
                 
-        print("🔊 Tous les sons ont été chargés avec succès !")
+        if (sound_ok):
+            print("🔊 Tous les sons ont été chargés avec succès !")
+        else:
+            print("🔊 Certains sons n'ont pas été chargés !")
         
     except Exception as e:
         print(f"Note : Mode audio indisponible ({e}). Mode silencieux activé.")
         # En cas de panne audio, on remplit le dictionnaire avec None pour éviter les plantages
-        SONS = {"brique": None, "raquette": None, "perte_vie": None, "victoire": None}
+        SONS = {"brique": None, "raquette": None, "perte_vie": None, "victoire": None, "next": None}
 
 # Appel de la fonction au lancement du jeu
 
@@ -88,7 +94,7 @@ MAX_BRICKS = ROWS * COLUMNS
 removed_bricks = 0
 player = "player 1"
 vies = 3
-statut_jeu = "JOUER"
+statut_jeu = "PAUSE"
 level_names = ["Qui va piano va sano", "Allegro ma non troppo", "Who switched off the lights?"
                "The Real McCoy"]
 
@@ -270,6 +276,33 @@ while en_cours:
         texte_surface = police_pause.render("GAME OVER", True, (255, 0, 0))
         texte_rect = texte_surface.get_rect(center=(LARGEUR // 2, HAUTEUR // 2))
         ecran.blit(texte_surface, texte_rect)
+
+    elif statut_jeu == "MENU":
+        ecran.fill((15, 15, 25))  # Fond bleu nuit très foncé
+    
+        # Dessin du titre principal du jeu
+        texte_titre = police_pause.render("BREAKOUT ARCADIA", True, (0, 255, 255))
+        rect_titre = texte_titre.get_rect(center=(LARGEUR // 2, HAUTEUR // 2 - 180))
+        ecran.blit(texte_titre, rect_titre)
+        
+        # Récupération des coordonnées de la souris pour l'effet "Hover"
+        pos_curseur = pygame.mouse.get_pos()
+        
+        # Bouton JOUER (Jaune si survolé, blanc sinon)
+        c_jouer = (255, 255, 0) if rect_btn_jouer.collidepoint(pos_curseur) else (255, 255, 255)
+        txt_jouer = police_menu.render("JOUER", True, c_jouer)
+        ecran.blit(txt_jouer, txt_jouer.get_rect(center=rect_btn_jouer.center))
+        
+        # Bouton HALL OF FAME (Jaune si survolé, blanc sinon)
+        c_scores = (255, 255, 0) if rect_btn_scores.collidepoint(pos_curseur) else (255, 255, 255)
+        txt_scores = police_menu.render("HALL OF FAME", True, c_scores)
+        ecran.blit(txt_scores, txt_scores.get_rect(center=rect_btn_scores.center))
+        
+        # Bouton QUITTER (Rouge si survolé, blanc sinon)
+        c_quitter = (255, 0, 0) if rect_btn_quitter.collidepoint(pos_curseur) else (255, 255, 255)
+        txt_quitter = police_menu.render("QUITTER", True, c_quitter)
+        ecran.blit(txt_quitter, txt_quitter.get_rect(center=rect_btn_quitter.center))
+
 
     pygame.display.flip()
 
