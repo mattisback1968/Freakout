@@ -10,11 +10,12 @@ SOUNDS_DIR = BASE_DIR / "assets" / "sounds"
 SONS = {}
 sounds_ok = True
 
+
 def charger_les_sons():
     """Initialise le mixeur et charge tous les sons du jeu en mémoire."""
     global SONS, sounds_ok
     
-    # Pré-configuration pour éviter le gel du Raspberry Pi / Linux
+    # Pré-configuration pour éviter le gel sur Raspberry Pi / Linux
     try:
         if not pygame.mixer.get_init():
             pygame.mixer.pre_init(44100, -16, 2, 512)
@@ -23,9 +24,10 @@ def charger_les_sons():
         liste_sons = {
             "brique": "boing.ogg",
             "raquette": "paddle.ogg",
-            "perte_vie": "lose_life.ogg",  
-            "victoire": "win.ogg",        
-            "next": "dun_dun.ogg"  
+            "perte_vie": "lose_life.ogg",
+            "victoire": "win.ogg",
+            "next": "dun_dun.ogg",
+            "game_over": "funeral_march.ogg"
         }
         
         for nom, fichier in liste_sons.items():
@@ -45,11 +47,11 @@ def charger_les_sons():
             print("📻 Certains sons sont manquants, mode partiel activé.")
         
     except Exception as e:
-        print(f"❌ Mode audio indisponible ({e}). Mode silencieux activé.")
+        print(f"❌ 🔇Mode audio indisponible ({e}). Mode silencieux activé. 🔇")
         # Remplissage par défaut pour éviter les NameError dans le main
         SONS = {
             "brique": None, "raquette": None, "perte_vie": None, 
-            "victoire": None, "next": None
+            "victoire": None, "next": None, "game_over": None
         }
         sounds_ok = False
 

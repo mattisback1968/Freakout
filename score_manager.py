@@ -24,7 +24,7 @@ def sauvegarder_nouveau_score(nom, score_joueur):
     liste_scores = charger_scores()
 
     # 2. Ajouter le nouveau score sous forme de dictionnaire
-    nouveau_donnee = {"name": nom.upper()[:6], "score": score_joueur} # Force 3 lettres max
+    nouveau_donnee = {"name": nom.upper()[:6], "score": score_joueur} # Force 6 lettres max
     liste_scores.append(nouveau_donnee)
 
     # 3. Trier la liste du plus grand score au plus petit

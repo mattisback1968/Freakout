@@ -16,6 +16,7 @@ sounds_ok_ = True
 # 2. Dictionnaire global pour stocker les sons chargés
 SONS = {}
 
+
 def charger_les_sons():
     """Initialise le mixeur et charge tous les sons du jeu en mémoire"""
     global SONS
@@ -23,11 +24,11 @@ def charger_les_sons():
         if not pygame.mixer.get_init():
             pygame.mixer.init()
             
-        # Liste de vos fichiers audio
+        # Liste des fichiers audio
         liste_sons = {
             "brique": "boing.ogg",
             "raquette": "paddle.ogg",
-            "perte_vie": "lose_life.ogg",  # Futur son, vie perdue
+            "game_over": "funeral_march.ogg",
             "victoire": "win.ogg",        # Futur son, niveau terminé
             "next": "dun_dun.ogg"  # futur son, passage au niveau supérieur
         }
@@ -46,10 +47,10 @@ def charger_les_sons():
         if (sound_ok):
             print("🔊 Tous les sons ont été chargés avec succès !")
         else:
-            print("🔊 Certains sons n'ont pas été chargés !")
+            print("🔇 Certains sons n'ont pas été chargés !")
         
     except Exception as e:
-        print(f"Note : Mode audio indisponible ({e}). Mode silencieux activé.")
+        print(f"🔇 Note : Mode audio indisponible ({e}). Mode silencieux activé. 🔇")
         # En cas de panne audio, on remplit le dictionnaire avec None pour éviter les plantages
         SONS = {"brique": None, "raquette": None, "perte_vie": None, "victoire": None, "next": None}
 
@@ -81,6 +82,7 @@ try:
     son_rebond = pygame.mixer.Sound(chemin_son)
     son_rebond = pygame.mixer.Sound("boing.ogg")
     son_rebond.set_volume(0.5)
+    son_game_over = os.path(chemin_dossier, "funeral_march.ogg")
 except Exception as e:
     # Si le pilote audio ou le fichier bloque, on passe outre sans figer le programme
     print(f"Note : Mode audio indisponible ({e}). Le jeu se lance en mode silencieux.")
@@ -96,7 +98,7 @@ player = "player 1"
 vies = 3
 statut_jeu = "PAUSE"
 level_names = ["Qui va piano va sano", "Allegro ma non troppo", "Who switched off the lights?"
-               "The Real McCoy"]
+               "The Real McCoy", "What, me worry?"]
 
 ecran = pygame.display.set_mode((LARGEUR, HAUTEUR))
 pygame.display.set_caption("Casse-briques")
@@ -227,7 +229,7 @@ while en_cours:
 
                 # Logique de destruction et score
                 if SONS["brique"]:
-                                SONS["brique"].play()
+                    SONS["brique"].play()
                 briques.remove(brique)
                 score += 10
                 removed_bricks += 1
@@ -241,6 +243,8 @@ while en_cours:
             vies -= 1
             if vies <= 0:
                 statut_jeu = "GAME_OVER"
+                if SONS["game_over"]:
+                    SONS["game_over"].play()
             else:
                 balle_x, balle_y = LARGEUR // 2, HAUTEUR // 2
                 balle_dx, balle_dy = 2, -2

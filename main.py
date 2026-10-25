@@ -105,8 +105,7 @@ while en_cours:
         ):
             statut_jeu = "PAUSE" if statut_jeu == "JOUER" else "JOUER"
 
-        # Aiguillage des événements spécifiques selon l'écran
-          # Aiguillage des événements spécifiques selon l'écran
+    # Aiguillage des événements spécifiques selon l'écran
     if statut_jeu == "MENU":
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: # 1 = Clic gauche
             pos_souris = event.pos
