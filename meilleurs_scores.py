@@ -3,11 +3,11 @@ import os
 import tkinter as tk
 from tkinter import messagebox
 
-FILENAME = "scores.json"  # Extension modifiée en .json
+FILENAME = "scores.json"
 
 
 def lire_scores():
-    """Lit les scores directement structurés en JSON."""
+    """Lecture des scores directement structurés en JSON."""
     if not os.path.exists(FILENAME):
         return []
 

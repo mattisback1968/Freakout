@@ -24,8 +24,8 @@ def charger_les_sons():
         liste_sons = {
             "brique": "boing.ogg",
             "raquette": "paddle.ogg",
-            "perte_vie": "lose_life.ogg",
-            "victoire": "win.ogg",
+            "perte_vie": "lose_life.ogg",  # not implemented, no sound file
+            "victoire": "win.ogg",  # not implemented, no sound file
             "next": "dun_dun.ogg",
             "game_over": "funeral_march.ogg"
         }

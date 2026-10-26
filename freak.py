@@ -29,8 +29,9 @@ def charger_les_sons():
             "brique": "boing.ogg",
             "raquette": "paddle.ogg",
             "game_over": "funeral_march.ogg",
+            "perte_vie": "life_lost.ogg",  # pas encore implémenté
             "victoire": "win.ogg",        # Futur son, niveau terminé
-            "next": "dun_dun.ogg"  # futur son, passage au niveau supérieur
+            "next": "dun_dun.ogg"  # passage au niveau supérieur
         }
         
         # Chargement automatique de chaque son
@@ -52,7 +53,7 @@ def charger_les_sons():
     except Exception as e:
         print(f"🔇 Note : Mode audio indisponible ({e}). Mode silencieux activé. 🔇")
         # En cas de panne audio, on remplit le dictionnaire avec None pour éviter les plantages
-        SONS = {"brique": None, "raquette": None, "perte_vie": None, "victoire": None, "next": None}
+        SONS = {"brique": None, "raquette": None, "game_over": None, "perte_vie": None, "victoire": None, "next": None}
 
 # Appel de la fonction au lancement du jeu
 
@@ -241,6 +242,7 @@ while en_cours:
         # Perte de balle
         if balle_y - balle_rayon > HAUTEUR:
             vies -= 1
+            # game over
             if vies <= 0:
                 statut_jeu = "GAME_OVER"
                 if SONS["game_over"]:
