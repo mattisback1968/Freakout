@@ -1,3 +1,5 @@
+#sound_elements_pi_adapted
+
 import pygame
 from pathlib import Path
 
@@ -29,10 +31,9 @@ def charger_les_sons():
             "next": "dun_dun.ogg",
             "game_over": "funeral_march.ogg"
         }
-        
+        # Chargement automatique de chaque son
         for nom, fichier in liste_sons.items():
             chemin_complet = SOUNDS_DIR / fichier
-            
             if chemin_complet.exists():
                 SONS[nom] = pygame.mixer.Sound(str(chemin_complet))
                 SONS[nom].set_volume(0.5)
@@ -42,7 +43,7 @@ def charger_les_sons():
                 sounds_ok = False
                 
         if sounds_ok:
-            print("🔊 Tous les sons ont été chargés avec succès depuis /assets/sounds/ !")
+            print("f🔊 Tous les sons ont été chargés avec succès depuis {chemin_complet} !")
         else:
             print("📻 Certains sons sont manquants, mode partiel activé.")
         
